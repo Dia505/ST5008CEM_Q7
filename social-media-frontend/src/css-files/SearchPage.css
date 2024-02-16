@@ -1,0 +1,30 @@
+.search-container input {
+    background-color: white;
+    border: black solid 2px;
+    color: black;
+    height: 25px;
+    border-radius: 5px;
+}
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.search-user-list {
+    margin-top: 40px;
+}
+.searched-user-detail, .search-result {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.search-result {
+    gap: 60px;
+    border: solid black 2px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 10px;
+}
+.searched-user-name {
+    color: black;
+}

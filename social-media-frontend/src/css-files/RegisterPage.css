@@ -1,0 +1,31 @@
+.centre-register {
+    margin-top: 100px;
+}
+.register-title-text {
+    font-size: 36px;
+    font-weight: bold;
+}
+.register-form-container {
+    border: black 2px solid;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+.register-text-field-container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 20px;
+}
+.register-text-field-container label {
+    font-size: 20px;
+}
+.register-text-field-container input {
+    background-color: white;
+    border: black solid 2px;
+    color: black;
+}
+.register-btn-container {
+    margin-top: 20px;
+}
