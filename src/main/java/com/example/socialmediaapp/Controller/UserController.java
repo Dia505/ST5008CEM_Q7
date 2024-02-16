@@ -23,7 +23,6 @@ public class UserController {
     }
 
     @PostMapping("/save-user")
-    // Parameter for the data entered from front end
     public String createData(@RequestBody UserDto userDto) {
         userService.saveUser(userDto);
         return "Created data";

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import "../css-files/RegisterPage.css"
 import { useMutation } from "react-query";
 import axios from "axios";
@@ -57,6 +57,11 @@ function RegisterPage() {
 
                         <div className={"register-btn-container"}>
                             <button className={"register-btn"} type={"submit"}>Create account</button>
+                        </div>
+
+                        <div className={"login-container-register"}>
+                            <p>Already have an account?</p>
+                            <Link to={"/login"}><p className={"login-btn-register"}>Login</p></Link>
                         </div>
                     </div>
                 </form>

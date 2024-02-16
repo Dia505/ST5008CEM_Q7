@@ -39,7 +39,7 @@
 }
 
 .add-post-form {
-    background-color: lightblue;
+    background-color: lightgrey;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -80,4 +80,44 @@
     height: 25px;
     width: 400px;
     margin-top: 20px;
+}
+.upload-btn {
+    margin-top: 20px;
+}
+
+.profile-post-list {
+    margin-left: 270px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.profile-post-container, .profile-post-details {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+.profile-post-container {
+    border: solid black 2px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    width: 400px;
+}
+.profile-post-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.profile-post {
+    height: 250px;
+}
+.profile-post-hashtag {
+    margin-top: -10px;
+}
+.like-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
 }
