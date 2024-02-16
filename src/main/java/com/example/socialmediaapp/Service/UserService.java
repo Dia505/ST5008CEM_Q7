@@ -5,12 +5,15 @@ import com.example.socialmediaapp.Entity.FriendRequest;
 import com.example.socialmediaapp.Entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     String saveUser(UserDto userDto);
     List<User> getAllUsers();
     List<User> findUserByFullName(String fullName);
+    Optional<User> findUserById(Integer userId);
     void sendFriendRequest(User sender, User receiver);
     void follow(User sender, User receiver, Integer requestId);
     List<FriendRequest> getFriendRequestByReceiver(User receiver);
+    List<User> findFriends(Integer userId);
 }

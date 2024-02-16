@@ -12,7 +12,7 @@ function Header() {
                 <Link to={"/home"}><FontAwesomeIcon icon={faHouse} className={"home-btn-header"}/></Link>
                 <Link to={"/search"}><FontAwesomeIcon icon={faMagnifyingGlass} className={"search-btn-header"}/></Link>
                 <Link to={"/notification"}><FontAwesomeIcon icon={faBell} className={"notif-btn-header"}/></Link>
-                <FontAwesomeIcon icon={faUser} className={"profile-btn-header"}/>
+                <Link to={"/profile"}><FontAwesomeIcon icon={faUser} className={"profile-btn-header"}/></Link>
             </div>
         </>
     )

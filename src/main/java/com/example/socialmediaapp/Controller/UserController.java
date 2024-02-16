@@ -39,6 +39,11 @@ public class UserController {
         return userService.findUserByFullName(fullName);
     }
 
+    @GetMapping("/get-user-by-id/{userId}")
+    public Optional<User> getUserById(@PathVariable("userId") Integer userId) {
+        return userService.findUserById(userId);
+    }
+
     @PostMapping("/send-friend-request/{senderId}/{receiverId}")
     public ResponseEntity<String> sendFriendRequest(@PathVariable Integer senderId, @PathVariable Integer receiverId) {
         User sender = userRepository.findById(senderId).orElseThrow();
@@ -61,5 +66,9 @@ public class UserController {
         return userService.getFriendRequestByReceiver(receiver);
     }
 
-
+    @GetMapping("/get-friend-list/{userId}")
+    public ResponseEntity<List<User>> getUserFriends(@PathVariable Integer userId) {
+        List<User> friendList = userService.findFriends(userId);
+        return ResponseEntity.ok(friendList);
+    }
 }

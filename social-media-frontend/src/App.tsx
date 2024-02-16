@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage.tsx";
 import Header from "./pages/Header.tsx";
 import NotificationPage from "./pages/NotificationPage.tsx";
 import SearchPage from "./pages/SearchPage.tsx";
+import ProfilePage from "./pages/ProfilePage.tsx";
 const router = createBrowserRouter(
     [
         {
@@ -32,6 +33,10 @@ const router = createBrowserRouter(
         {
             path: "/search",
             element: <SearchPage/>
+        },
+        {
+            path: "/profile",
+            element: <ProfilePage/>
         }
     ]
 )

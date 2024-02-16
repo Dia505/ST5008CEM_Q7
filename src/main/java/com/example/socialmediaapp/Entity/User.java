@@ -41,14 +41,14 @@ public class User {
         this.followingMatrix = new boolean[100][100];
     }
 
-    public void follow(User receiver) {
-        int receiverIndex = getIndexInFollowingMatrix(receiver);
-        if (receiverIndex != -1) {
-            followingMatrix[userId][receiverIndex] = true;
-        }
-    }
-
-    private int getIndexInFollowingMatrix(User user) {
-        return user.getUserId();
-    }
+//    public void follow(User receiver) {
+//        int receiverIndex = getIndexInFollowingMatrix(receiver);
+//        if (receiverIndex != -1) {
+//            followingMatrix[userId][receiverIndex] = true;
+//        }
+//    }
+//
+//    private int getIndexInFollowingMatrix(User user) {
+//        return user.getUserId();
+//    }
 }
