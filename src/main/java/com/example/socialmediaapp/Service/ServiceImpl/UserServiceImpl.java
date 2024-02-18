@@ -15,10 +15,36 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+class FollowingMatrixService {
+    public boolean[][] followingMatrix1;
+
+    public FollowingMatrixService() {
+        followingMatrix1 = new boolean[100][100];
+    }
+
+    public boolean[][] getFollowingMatrix() {
+        return followingMatrix1;
+    }
+
+    public synchronized void updateFollowingMatrix(int senderIndex, int receiverIndex) {
+        followingMatrix1[senderIndex][receiverIndex] = true;
+        followingMatrix1[receiverIndex][senderIndex] = true;
+
+        for(int i = 0; i<4; i++) {
+            for(int j = 0; j<4; j++) {
+                System.out.print(i + " + " + j + " = " + followingMatrix1[i][j]);
+            }
+            System.out.println();
+        }
+    }
+}
+
+@Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final FriendRequestRepository friendRequestRepository;
+    private final FollowingMatrixService followingMatrixService;
 
     @Override
     public String saveUser(UserDto userDto) {
@@ -58,6 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void follow(User sender, User receiver, Integer requestId) {
         Optional<FriendRequest> friendRequestOptional = friendRequestRepository.findById(requestId);
         if (friendRequestOptional.isPresent()) {
@@ -65,15 +92,24 @@ public class UserServiceImpl implements UserService {
             friendRequest.setStatus("accepted");
             friendRequestRepository.save(friendRequest);
 
+            FriendRequest newFriendRequest = new FriendRequest();
+            newFriendRequest.setSender(receiver);
+            newFriendRequest.setReceiver(sender);
+            newFriendRequest.setStatus("accepted");
+            friendRequestRepository.save(newFriendRequest);
+
             User user = userRepository.findById(sender.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
-            updateFollowingMatrix(user, receiver);
+            int senderIndex = getIndexInFollowingMatrix(user);
+            int receiverIndex = getIndexInFollowingMatrix(receiver);
+            followingMatrixService.updateFollowingMatrix(senderIndex, receiverIndex);
         }
         else {
             System.out.println("The friend request does not exist");
         }
     }
 
-    private void updateFollowingMatrix(User user, User receiver) {
+    @Transactional
+    public void updateFollowingMatrix(User user, User receiver) {
         boolean followingMatrix[][] = user.getFollowingMatrix();
         int senderIndex = getIndexInFollowingMatrix(user);
         int receiverIndex = getIndexInFollowingMatrix(receiver);
@@ -107,16 +143,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public List<User> findFriends(Integer userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        boolean followingMatrix[][] = user.getFollowingMatrix();
         List<User> friendList = new ArrayList<>();
 
-        int senderIndex = getIndexInFollowingMatrix(user);
-
-        for (int i = 0; i < followingMatrix.length; i++) {
-            if (followingMatrix[senderIndex][i]) {
-                System.out.println("friend: " + i);
-                User friend = userRepository.findById(i).orElseThrow(() -> new RuntimeException("Friend not found"));
-                friendList.add(friend);
+        List<FriendRequest> friendRequests = friendRequestRepository.findFriendRequestBySender(user);
+        for (FriendRequest request : friendRequests) {
+            if ("accepted".equals(request.getStatus())) {
+                friendList.add(request.getReceiver());
             }
         }
 

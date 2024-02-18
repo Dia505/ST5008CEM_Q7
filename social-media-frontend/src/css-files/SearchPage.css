@@ -28,3 +28,9 @@
 .searched-user-name {
     color: black;
 }
+.friend-label {
+    background-color: black;
+    color: white;
+    width: 70px;
+    border-radius: 5px;
+}

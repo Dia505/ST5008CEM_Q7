@@ -10,6 +10,7 @@ function SearchPage() {
     const [searchResult, setSearchResult] = useState([]);
     const userId = localStorage.getItem("loggedInUserId");
     const [requestsSent, setRequestsSent] = useState(new Set());
+    const [friendList, setFriendList] = useState([]);
 
     const handleSearchInputChange = (event) => {
         setSearchInput(event.target.value);
@@ -46,6 +47,28 @@ function SearchPage() {
         }
     };
 
+    const returnFriendList = async () => {
+        try {
+            const response = await axios.get(
+                `http://localhost:8080/user/get-friend-list/${userId}`
+            );
+            setFriendList(response.data);
+            console.log(response.data);
+        }
+        catch (error) {
+            console.error("Error getting friend list:", error);
+
+        }
+    }
+
+    useEffect(() => {
+        returnFriendList();
+    }, []);
+
+    const isFriend = (userId) => {
+        return friendList.some(friend => friend.userId === userId);
+    };
+
     return (
         <>
             <Header/>
@@ -63,12 +86,16 @@ function SearchPage() {
                                 <FontAwesomeIcon icon={faUser}/>
                                 <p className={"searched-user-name"}>{user.fullName}</p>
                             </div>
-                            <button
-                                onClick={() => sendFriendRequest(user.userId)}
-                                disabled={requestsSent.has(user.userId)}
-                            >
-                                {requestsSent.has(user.userId) ? "Request Sent" : "Add friend"}
-                            </button>
+                            {isFriend(user.userId) ? (
+                                <div className={"friend-label"}>Friend</div>
+                            ) : (
+                                <button
+                                    onClick={() => sendFriendRequest(user.userId)}
+                                    disabled={requestsSent.has(user.userId)}
+                                >
+                                    {requestsSent.has(user.userId) ? "Request Sent" : "Add friend"}
+                                </button>
+                            )}
                         </div>
                     ))}
                 </div>
