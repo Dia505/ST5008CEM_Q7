@@ -10,4 +10,5 @@ public interface PostService {
     List<Post> getAllPosts();
     List<Post> getPostsByUserId(Integer userId);
     List<Post> getPostsByHashtag(String hashtag);
+    void likePost(Integer postId);
 }

@@ -62,6 +62,7 @@ function ProfilePage() {
         onSuccess: () => {
             setAddFormVisible(false);
             alert("The post has been uploaded!");
+            window.location.reload();
         },
         onMutate: (requestData) => {
             return { userId };

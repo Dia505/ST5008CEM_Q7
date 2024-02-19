@@ -8,7 +8,6 @@ function HomePage() {
     const userId = localStorage.getItem("loggedInUserId");
     const [friendList, setFriendList] = useState([]);
     const [friendPosts, setFriendPosts] = useState([]);
-    const [postLike, setPostLike] = useState(0);
 
     useEffect(() => {
         const returnFriendList = async () => {
@@ -41,6 +40,34 @@ function HomePage() {
         returnFriendPosts();
     }, [friendList]);
 
+    const handleLikePost = async (postId) => {
+        try {
+            await axios.post(`http://localhost:8080/post/like/${postId}`);
+        }
+        catch (error) {
+            console.error("Error liking post:", error);
+        }
+    };
+
+    const handleSaveLike = async (postId) => {
+        try {
+            await axios.post("http://localhost:8080/like/save-like", {
+                postId: postId,
+                userId: userId,
+            });
+            // Update UI or fetch updated post data
+        } catch (error) {
+            console.error("Error saving like:", error);
+            // Handle error
+        }
+    };
+
+    const handleLikeFunctions = (postId) => {
+        handleLikePost(postId);
+        handleSaveLike(postId);
+        window.location.reload();
+    }
+
     return (
         <>
             <Header/>
@@ -60,10 +87,10 @@ function HomePage() {
                                 <p>{post.title}</p>
                                 <p className={"home-post-hashtag"}>{post.hashtag}</p>
                                 <img className={"home-post"} src={`/${post.postImage}`}/>
-                                <div className={"like-container"}>
-                                    <FontAwesomeIcon icon={faThumbsUp} />
+                                <div className={"like-container"} onClick={() => handleLikeFunctions(post.postId)}>
+                                    <FontAwesomeIcon icon={faThumbsUp}/>
                                     <p>Like</p>
-                                    <p>{postLike}</p>
+                                    <p>{post.likes}</p>
                                 </div>
                             </div>
                         </div>

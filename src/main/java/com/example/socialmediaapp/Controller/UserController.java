@@ -5,6 +5,7 @@ import com.example.socialmediaapp.Entity.FriendRequest;
 import com.example.socialmediaapp.Entity.User;
 import com.example.socialmediaapp.Repository.UserRepository;
 import com.example.socialmediaapp.Service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,14 +14,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
-
-    public UserController(UserService userService, UserRepository userRepository) {
-        this.userService = userService;
-        this.userRepository = userRepository;
-    }
 
     @PostMapping("/save-user")
     public String createData(@RequestBody UserDto userDto) {

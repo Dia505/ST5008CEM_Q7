@@ -73,4 +73,16 @@ public class PostServiceImpl implements PostService {
     public List<Post> getPostsByHashtag(String hashtag) {
         return postRepository.findPostByHashtag(hashtag);
     }
+
+    @Override
+    public void likePost(Integer postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+
+        // Increment the like count
+        post.setLikes(post.getLikes() + 1);
+
+        // Save the updated post entity
+        postRepository.save(post);
+    }
 }

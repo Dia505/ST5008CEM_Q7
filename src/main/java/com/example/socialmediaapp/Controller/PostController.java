@@ -2,23 +2,18 @@ package com.example.socialmediaapp.Controller;
 
 import com.example.socialmediaapp.Dto.PostDto;
 import com.example.socialmediaapp.Entity.Post;
-import com.example.socialmediaapp.Repository.PostRepository;
 import com.example.socialmediaapp.Service.PostService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/post")
+@RequiredArgsConstructor
 public class PostController {
-    private final PostRepository postRepository;
     private final PostService postService;
-
-    public PostController(PostRepository postRepository, PostService postService) {
-        this.postRepository = postRepository;
-        this.postService = postService;
-    }
 
     @PostMapping("/upload-post")
     public String insertData(@ModelAttribute PostDto postDto) {
@@ -40,5 +35,11 @@ public class PostController {
     @GetMapping("/get-post-by-hashtag/{hashtag}")
     public List<Post> getPostByHashtag(@PathVariable("hashtag") String hashtag) {
         return postService.getPostsByHashtag(hashtag);
+    }
+
+    @PostMapping("/like/{postId}")
+    public ResponseEntity<String> likePost(@PathVariable("postId") Integer postId) {
+        postService.likePost(postId);
+        return ResponseEntity.ok("Post liked successfully");
     }
 }
