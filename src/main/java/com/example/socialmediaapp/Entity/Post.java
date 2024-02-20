@@ -10,6 +10,7 @@ import lombok.*;
 @Entity
 
 @Table(name = "posts")
+// Creation of table for posts
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

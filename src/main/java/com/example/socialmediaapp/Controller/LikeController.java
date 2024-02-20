@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LikeController {
     private final LikeService likeService;
 
+    // To save like in database done by a user
     @PostMapping("/save-like")
     public ResponseEntity<String> saveLike(@RequestBody LikesDto likesDto) {
         String response = likeService.saveLike(likesDto);

@@ -12,10 +12,12 @@ function SearchPage() {
     const [requestsSent, setRequestsSent] = useState(new Set());
     const [friendList, setFriendList] = useState([]);
 
+    // To update the searchInput state variable based on the user's entry in search bar
     const handleSearchInputChange = (event) => {
         setSearchInput(event.target.value);
     };
 
+    // To display a user based on their full name
     const { data } = useQuery(
         ["GETDATA", searchInput],
         async () => {
@@ -28,15 +30,19 @@ function SearchPage() {
 
     useEffect(() => {
         if (data) {
+            // Sets data of search user in searchResult state variable
             setSearchResult(data);
         }
     }, [data]);
 
+    // To send friend request to that user
     const sendFriendRequest = async (receiverId) => {
         try {
             const response = await axios.post(
                 `http://localhost:8080/user/send-friend-request/${userId}/${receiverId}`
             );
+            // To update state variable requestSent by creating a new set with the previous request sent and receiver id
+            // Taking previous requests as argument ensures that we are working with the most up-to-date state
             setRequestsSent((prevRequests) => new Set([...prevRequests, receiverId]));
             console.log(response.data);
             console.log("Friend request sent");
@@ -47,6 +53,7 @@ function SearchPage() {
         }
     };
 
+    // To return friend list and display friend on searching that user
     const returnFriendList = async () => {
         try {
             const response = await axios.get(
@@ -65,7 +72,9 @@ function SearchPage() {
         returnFriendList();
     }, []);
 
+    // To check if the users are friends of the logged-in user
     const isFriend = (userId) => {
+        // some method iterate over each element of friendList array
         return friendList.some(friend => friend.userId === userId);
     };
 
@@ -86,9 +95,12 @@ function SearchPage() {
                                 <FontAwesomeIcon icon={faUser}/>
                                 <p className={"searched-user-name"}>{user.fullName}</p>
                             </div>
+                            {/*If friend, "Friend" label is displayed*/}
                             {isFriend(user.userId) ? (
                                 <div className={"friend-label"}>Friend</div>
                             ) : (
+                                // If not friend, "Add friend" button is displayed
+                                // On clicking the button, "Request sent" is displayed and the button becomes unclickable
                                 <button
                                     onClick={() => sendFriendRequest(user.userId)}
                                     disabled={requestsSent.has(user.userId)}

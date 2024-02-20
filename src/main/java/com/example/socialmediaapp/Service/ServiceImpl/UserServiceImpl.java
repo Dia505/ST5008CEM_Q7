@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+// Separate following matrix class to deal with the adjacency matrix
 class FollowingMatrixService {
     public boolean[][] followingMatrix1;
 
@@ -26,19 +27,22 @@ class FollowingMatrixService {
         return followingMatrix1;
     }
 
+    // Function to update the matrix for every follow
+    // synchronized used to allow only one thread to execute the method, to avoid any conflicts
     public synchronized void updateFollowingMatrix(int senderIndex, int receiverIndex) {
+        // With a receiver accepting a sender's request, they both will follow each other
         followingMatrix1[senderIndex][receiverIndex] = true;
         followingMatrix1[receiverIndex][senderIndex] = true;
 
-        ArrayList list= new ArrayList<>();
+        ArrayList matrixList= new ArrayList<>();
 
         for(int i = 0; i< followingMatrix1.length; i++) {
             for(int j = 0; j<followingMatrix1[0].length; j++) {
-                list.add(i + " + " + j + " = " + followingMatrix1[i][j]);
+                matrixList.add(i + " + " + j + " = " + followingMatrix1[i][j]);
             }
 
         }
-        System.out.println(list);
+        System.out.println(matrixList);
     }
 }
 
@@ -49,6 +53,7 @@ public class UserServiceImpl implements UserService {
     private final FriendRequestRepository friendRequestRepository;
     private final FollowingMatrixService followingMatrixService;
 
+    // Function to save user details
     @Override
     public String saveUser(UserDto userDto) {
         User user = new User();
@@ -77,17 +82,20 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(userId);
     }
 
+    // Function to send friend request
     @Override
     public void sendFriendRequest(User sender, User receiver) {
         FriendRequest friendRequest = new FriendRequest();
         friendRequest.setSender(sender);
         friendRequest.setReceiver(receiver);
+        // The status of friend request is kept as "pending" until not accepted
         friendRequest.setStatus("pending");
         friendRequestRepository.save(friendRequest);
     }
 
     @Override
     @Transactional
+    // Function that sets friend request status as accepted and has the users follow each other
     public void follow(User sender, User receiver, Integer requestId) {
         Optional<FriendRequest> friendRequestOptional = friendRequestRepository.findById(requestId);
         if (friendRequestOptional.isPresent()) {
@@ -102,6 +110,7 @@ public class UserServiceImpl implements UserService {
             friendRequestReverse.setStatus("accepted");
             friendRequestRepository.save(friendRequestReverse);
 
+            // To update the matrix with new follow
             int senderIndex = getIndexInFollowingMatrix(sender);
             int receiverIndex = getIndexInFollowingMatrix(receiver);
             followingMatrixService.updateFollowingMatrix(senderIndex, receiverIndex);
@@ -127,7 +136,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         List<User> friendList = new ArrayList<>();
 
-        // Using graph
+        // Returning friend list using graph
         int senderIndex = getIndexInFollowingMatrix(user);
 
         for (int i = 0; i < followingMatrixService.followingMatrix1.length; i++) {
@@ -138,7 +147,7 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        // Using database
+        // Returning friend list using database
         List<FriendRequest> friendRequests = friendRequestRepository.findFriendRequestBySender(user);
         for (FriendRequest request : friendRequests) {
             if ("accepted".equals(request.getStatus())) {

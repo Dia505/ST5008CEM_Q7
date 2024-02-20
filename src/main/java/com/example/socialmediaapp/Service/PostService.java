@@ -8,7 +8,9 @@ import java.util.List;
 public interface PostService {
     String uploadPost(PostDto postDto);
     List<Post> getAllPosts();
+    // Function to return posts posted by a user
     List<Post> getPostsByUserId(Integer userId);
     List<Post> getPostsByHashtag(String hashtag);
+    // Function to save likes of a post
     void likePost(Integer postId);
 }

@@ -11,6 +11,7 @@ import lombok.*;
 @Entity
 
 @Table(name = "friend_request")
+// Creation of table to store following status between users, mimicking graph data structure
 public class FriendRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

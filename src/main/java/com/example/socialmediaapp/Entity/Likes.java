@@ -11,6 +11,7 @@ import lombok.*;
 @Entity
 
 @Table(name = "likes")
+// Creation of table to store likes provided by users for recommending posts
 public class Likes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

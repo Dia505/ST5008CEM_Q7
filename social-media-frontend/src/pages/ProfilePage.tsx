@@ -14,6 +14,7 @@ function ProfilePage() {
     const [userPosts, setUserPosts] = useState([]);
     const [postLike, setPostLike] = useState(0);
 
+    // To display data of logged-in user
     const {data} = useQuery(
         ["GETUSERDATA", userId],
         async () => {
@@ -22,6 +23,7 @@ function ProfilePage() {
         }
     );
 
+    // To display posts of the logged-in user
     const fetchUserPosts = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/post/get-post-by-userId/${userId}`);
@@ -36,6 +38,7 @@ function ProfilePage() {
         fetchUserPosts()
     }, []);
 
+    // To upload post
     const uploadPost = useMutation({
         mutationKey: "UPLOAD_POST",
         mutationFn: async (requestData: any) => {
@@ -59,6 +62,7 @@ function ProfilePage() {
                 console.log("Error uploading file: ",error);
             }
         },
+        // On post upload being a success, the add form closes and the page reloads to update the display of all posts
         onSuccess: () => {
             setAddFormVisible(false);
             alert("The post has been uploaded!");
@@ -69,6 +73,7 @@ function ProfilePage() {
         }
     })
 
+    // To clear the text fields after uploading
     const clearAddForm = () => {
         setValue("title", "");
         setValue("hashtag", "");
@@ -86,11 +91,14 @@ function ProfilePage() {
             <div className={"centre-profile"}>
                 <div className={"title-addPost-container-profile"}>
                     <p className={"profile-title-text"}>Profile</p>
+
+                    {/*Add Post button controls the visibility of the add post form*/}
                     <button className={"add-post-btn"} onClick={() => {
                         setAddFormVisible(!isAddFormVisible);
                     }}>Add Post</button>
                 </div>
 
+                {/*Div that displays user details*/}
                 <div className={"user-details-container"}>
                     <FontAwesomeIcon icon={faUser} className={"profile-icon"}/>
 
@@ -102,6 +110,7 @@ function ProfilePage() {
                     )}
                 </div>
 
+                {/*Div that displays the Add Post form*/}
                 {isAddFormVisible && (
                     <form onSubmit={handleSubmit(onSubmitUpload)}>
                         <div className={"add-post-form"}>
@@ -143,6 +152,7 @@ function ProfilePage() {
                     </form>
                 )}
 
+                {/*Div that displays all posts posted by logged-in user*/}
                 <div className={"profile-post-list"}>
                     {userPosts.map((post) => (
                         <div className={"profile-post-container"} key={post.postId}>

@@ -11,6 +11,7 @@ function NotificationPage() {
     const [acceptedRequests, setAcceptedRequests] = useState([]);
     const userId = localStorage.getItem("loggedInUserId");
 
+    // To update the friend request from "pending" to "accepted"
     const acceptFriendRequest = async (senderId, requestId) => {
         try {
             const response = await axios.post(`http://localhost:8080/user/follow/${senderId}/${userId}/${requestId}`);
@@ -23,6 +24,7 @@ function NotificationPage() {
         }
     };
 
+    // To display the list of friend requests received
     useEffect(() => {
         const fetchFriendRequests = async () => {
             try {
@@ -50,9 +52,11 @@ function NotificationPage() {
                         <div key={request.requestId} className="friend-request-container">
                             <FontAwesomeIcon icon={faUser}/>
                             <p>{request.sender.fullName} sent you a friend request</p>
+                            {/*If the request has been accepted, based on the request id, "Accepted" displayed*/}
                             {acceptedRequests.includes(request.requestId) ? (
                                 <span>Accepted <FontAwesomeIcon icon={faCheck} /></span>
                             ) : (
+                                // If request not accepted, Accept button displayed
                                 <button onClick={() => acceptFriendRequest(request.sender.userId, request.requestId)}>Accept</button>
                             )}
                         </div>

@@ -12,8 +12,12 @@ public interface UserService {
     List<User> getAllUsers();
     List<User> findUserByFullName(String fullName);
     Optional<User> findUserById(Integer userId);
+    // Function to send friend requests
     void sendFriendRequest(User sender, User receiver);
+    // Function to accept friend requests
     void follow(User sender, User receiver, Integer requestId);
+    // Function to return friend requests received by a user
     List<FriendRequest> getFriendRequestByReceiver(User receiver);
+    // Function to return list of friends of a user
     List<User> findFriends(Integer userId);
 }

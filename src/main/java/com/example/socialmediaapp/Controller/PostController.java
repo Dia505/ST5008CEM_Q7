@@ -37,6 +37,7 @@ public class PostController {
         return postService.getPostsByHashtag(hashtag);
     }
 
+    // To save like received by a post
     @PostMapping("/like/{postId}")
     public ResponseEntity<String> likePost(@PathVariable("postId") Integer postId) {
         postService.likePost(postId);

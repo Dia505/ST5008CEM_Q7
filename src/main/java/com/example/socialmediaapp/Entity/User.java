@@ -14,6 +14,7 @@ import lombok.*;
         @UniqueConstraint(name = "UNIQUE_user_email", columnNames = "email")
 })
 
+// Creation of users table
 public class User {
 
     @Id
@@ -35,20 +36,4 @@ public class User {
 
     @Transient
     private boolean followingMatrix[][];
-
-//    @PostLoad
-//    private void initializeFollowingMatrix() {
-//        this.followingMatrix = new boolean[100][100];
-//    }
-
-//    public void follow(User receiver) {
-//        int receiverIndex = getIndexInFollowingMatrix(receiver);
-//        if (receiverIndex != -1) {
-//            followingMatrix[userId][receiverIndex] = true;
-//        }
-//    }
-//
-//    private int getIndexInFollowingMatrix(User user) {
-//        return user.getUserId();
-//    }
 }

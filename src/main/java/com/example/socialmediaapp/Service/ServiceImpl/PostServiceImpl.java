@@ -75,6 +75,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    // Function to set the new likes for a post
     public void likePost(Integer postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
