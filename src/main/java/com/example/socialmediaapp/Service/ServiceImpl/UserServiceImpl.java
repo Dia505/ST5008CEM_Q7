@@ -30,12 +30,15 @@ class FollowingMatrixService {
         followingMatrix1[senderIndex][receiverIndex] = true;
         followingMatrix1[receiverIndex][senderIndex] = true;
 
-        for(int i = 0; i<4; i++) {
-            for(int j = 0; j<4; j++) {
-                System.out.print(i + " + " + j + " = " + followingMatrix1[i][j]);
+        ArrayList list= new ArrayList<>();
+
+        for(int i = 0; i< followingMatrix1.length; i++) {
+            for(int j = 0; j<followingMatrix1[0].length; j++) {
+                list.add(i + " + " + j + " = " + followingMatrix1[i][j]);
             }
-            System.out.println();
+
         }
+        System.out.println(list);
     }
 }
 
@@ -92,43 +95,22 @@ public class UserServiceImpl implements UserService {
             friendRequest.setStatus("accepted");
             friendRequestRepository.save(friendRequest);
 
-            FriendRequest newFriendRequest = new FriendRequest();
-            newFriendRequest.setSender(receiver);
-            newFriendRequest.setReceiver(sender);
-            newFriendRequest.setStatus("accepted");
-            friendRequestRepository.save(newFriendRequest);
+            // Create a new friend request from receiver to sender with accepted status
+            FriendRequest friendRequestReverse = new FriendRequest();
+            friendRequestReverse.setSender(receiver);
+            friendRequestReverse.setReceiver(sender);
+            friendRequestReverse.setStatus("accepted");
+            friendRequestRepository.save(friendRequestReverse);
 
-            User user = userRepository.findById(sender.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
-            int senderIndex = getIndexInFollowingMatrix(user);
+            int senderIndex = getIndexInFollowingMatrix(sender);
             int receiverIndex = getIndexInFollowingMatrix(receiver);
             followingMatrixService.updateFollowingMatrix(senderIndex, receiverIndex);
-        }
-        else {
+            userRepository.save(sender);
+        } else {
             System.out.println("The friend request does not exist");
         }
     }
 
-    @Transactional
-    public void updateFollowingMatrix(User user, User receiver) {
-        boolean followingMatrix[][] = user.getFollowingMatrix();
-        int senderIndex = getIndexInFollowingMatrix(user);
-        int receiverIndex = getIndexInFollowingMatrix(receiver);
-
-        if (senderIndex != -1 && receiverIndex != -1) {
-            followingMatrix[senderIndex][receiverIndex] = true;
-            followingMatrix[receiverIndex][senderIndex] = true;
-            user.setFollowingMatrix(followingMatrix);
-
-            for(int i = 0; i<4; i++) {
-                for(int j = 0; j<4; j++) {
-                    System.out.print(i + " + " + j + " = " + followingMatrix[i][j]);
-                }
-                System.out.println();
-            }
-
-            userRepository.save(user);
-        }
-    }
 
     private int getIndexInFollowingMatrix(User user) {
         return user.getUserId();
@@ -145,14 +127,32 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         List<User> friendList = new ArrayList<>();
 
+        // Using graph
+        int senderIndex = getIndexInFollowingMatrix(user);
+
+        for (int i = 0; i < followingMatrixService.followingMatrix1.length; i++) {
+            if (i != senderIndex && followingMatrixService.followingMatrix1[senderIndex][i] && followingMatrixService.followingMatrix1[i][senderIndex]) {
+                System.out.println("friend: " + i);
+                User friend = userRepository.findById(i).orElseThrow(() -> new RuntimeException("Friend not found"));
+                friendList.add(friend);
+            }
+        }
+
+        // Using database
         List<FriendRequest> friendRequests = friendRequestRepository.findFriendRequestBySender(user);
         for (FriendRequest request : friendRequests) {
             if ("accepted".equals(request.getStatus())) {
-                friendList.add(request.getReceiver());
+                if (!request.getSender().equals(user)) {
+                    friendList.add(request.getSender());
+                }
+                else if (!request.getReceiver().equals(user)) {
+                    friendList.add(request.getReceiver());
+                }
             }
         }
 
         System.out.println(friendList);
         return friendList;
     }
+
 }

@@ -19,7 +19,7 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public String saveLike(LikesDto likesDto) {
         Likes like = new Likes();
-        like.setLikeUser(userRepository.findById(likesDto.getUserId()).orElseThrow(() -> new NullPointerException("User not found")));
+        like.setUser(userRepository.findById(likesDto.getUserId()).orElseThrow(() -> new NullPointerException("User not found")));
         like.setPost(postRepository.findById(likesDto.getPostId()).orElseThrow(() -> new NullPointerException("Post not found")));
         likesRepository.save(like);
         return "Like saved successfully";

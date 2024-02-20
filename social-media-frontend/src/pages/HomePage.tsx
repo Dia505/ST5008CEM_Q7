@@ -8,6 +8,7 @@ function HomePage() {
     const userId = localStorage.getItem("loggedInUserId");
     const [friendList, setFriendList] = useState([]);
     const [friendPosts, setFriendPosts] = useState([]);
+    const [recommendedPosts, setRecommendedPosts] = useState([]);
 
     useEffect(() => {
         const returnFriendList = async () => {
@@ -30,8 +31,10 @@ function HomePage() {
                     return response.data;
                 });
                 const friendPostsData = await Promise.all(promises);
-                setFriendPosts(friendPostsData.flat());
-                console.log("friendPosts",friendPosts);
+                const uniquePosts = friendPostsData.flat().filter((post, index, self) =>
+                    index === self.findIndex((p) => p.postId === post.postId)
+                );
+                setFriendPosts(uniquePosts);
             } catch (error) {
                 console.error("Error getting posts of friends:", error);
             }
@@ -39,6 +42,25 @@ function HomePage() {
 
         returnFriendPosts();
     }, [friendList]);
+
+    useEffect(() => {
+        if (userId) {
+            const fetchRecommendedPosts = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8080/recommend/recommendations/${userId}`);
+                    setRecommendedPosts(response.data);
+                } catch (error) {
+                    console.error("Error getting recommended posts:", error);
+                }
+            };
+
+            fetchRecommendedPosts();
+        }
+    }, [userId]);
+
+    const displayPosts = userId && friendList.length > 0 && friendPosts.length > 0 ?
+        recommendedPosts.length > 0 ? recommendedPosts : friendPosts :
+        [];
 
     const handleLikePost = async (postId) => {
         try {
@@ -75,7 +97,7 @@ function HomePage() {
                 <p className={"home-title-text"}>Home</p>
 
                 <div className={"home-post-list"}>
-                    {friendPosts.map((post) => (
+                    {displayPosts.map((post) => (
                         <div className={"home-post-container"} key={post.postId}>
                             <div className={"home-post-user"}>
                                 <FontAwesomeIcon icon={faUser} className={"profile-icon"}/>

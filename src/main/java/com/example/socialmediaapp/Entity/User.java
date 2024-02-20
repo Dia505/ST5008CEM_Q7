@@ -36,10 +36,10 @@ public class User {
     @Transient
     private boolean followingMatrix[][];
 
-    @PostLoad
-    private void initializeFollowingMatrix() {
-        this.followingMatrix = new boolean[100][100];
-    }
+//    @PostLoad
+//    private void initializeFollowingMatrix() {
+//        this.followingMatrix = new boolean[100][100];
+//    }
 
 //    public void follow(User receiver) {
 //        int receiverIndex = getIndexInFollowingMatrix(receiver);
